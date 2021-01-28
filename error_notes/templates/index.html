@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content%}
+
+<form>
+    <div class="input-group">
+        <input type="search" class="form-control rounded" placeholder="Dump your error...." aria-label="Search"
+            aria-describedby="search-addon" />
+        &nbsp;&nbsp;
+        <input type="submit" value="Search for Fix" class="btn btn-primary"/>
+    </div>
+</form>
+
+<br>
+<hr>
+<br>
+
+{% for q in question %}
+<div class="card">
+    <div class="card-header">{{q.title}}</div>
+    <div class="card-footer">
+        <button type="button" class="btn btn-danger">Fixes <span class="badge">{{q.answers}}</span></button>
+        <button type="button" >Created On <span class="badge">{{q.created_on}}</span></button>
+        <button type="button" class="btn btn-secondary">Asked by <span class="badge">{{q.tag}}</span></button>
+        <a href="question/{{ q.id }}">Expand </a>
+    </div>
+</div>
+<br>
+{% endfor %}
+
+<div class="container">
+    {% if question.has_other_pages %}
+      <ul class="pagination">
+        {% if question.has_previous %}
+          <li><a href="?page={{ question.previous_page_number }}" >&laquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>&laquo;</span></li>&nbsp;
+        {% endif %}
+    
+        {% for i in question.paginator.page_range %}
+          {% if question.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>&nbsp;
+          {% else %}
+            <li><a href="?page={{ i }}"  >{{ i }}</a></li>&nbsp;
+          {% endif %}
+        {% endfor %}
+        {% if question.has_next %}
+          <li><a href="?page={{ question.next_page_number }}">&raquo;</a></li>&nbsp;
+        {% else %}
+          <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+</div>
+
+
+{% endblock %}

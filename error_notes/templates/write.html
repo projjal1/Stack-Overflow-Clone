@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script>
+    function load(){
+        var s = '{{content}}';
+        s=s.replaceAll('&lt;','<');
+        s=s.replaceAll('&gt;','>');
+
+        //Load the document content
+        document.getElementById("content").innerHTML=s;
+        //Hide button after clicking once
+        document.getElementById("but-click").hidden=true;
+    }
+
+    function report(id)
+    {
+        alert(id);
+    }
+</script>
+
+
+
+<div class="container">
+    <div class="row">
+      <div class="col-md-12 card mb-4  mt-3 center  top">
+        <div class="card-body">
+          <h1>{{ object.title }}</h1>
+          <p class=" text-muted">{{ object.tag }} | {{ object.created_on }} </p>
+          <hr>
+          <div class="container" id="content"></div>
+          <br>
+          <button id="but-click" class="btn btn-primary" onclick="load()">Click to read..</button>
+          <hr>
+          <a class="active" href="answer/{{object.id}}">Reply</a>
+        </div>
+    </div>
+</div>
+
+{% for f in fix %}
+<div class="card">
+    <div class="card-header">{{f.content}}</div>
+    <div class="card-footer">
+        <input id="upvote" type="button" class="label upvote" value="Upvote Answer" style="background: red; color: white;">
+        <button style="color: red;" hidden>Answer has been upvoted!</button>
+        <button class="btn btn-primary">Upvotes <span class="badge">{{f.upvotes}}</span></button>
+        <button class="btn btn-dark">Replied by <span class="badge">{{f.tag}}</span> on <span class="badge">{{f.created_on}}</span></button>
+        <button class="btn btn-light"><img src="/static/report_abuse.jpg" height="45"></button>
+        <input type="button" value="HEllo">
+    </div>
+</div>
+<br>
+{% endfor %}
+
+{% endblock %}
