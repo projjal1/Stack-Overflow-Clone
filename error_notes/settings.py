@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import django_heroku
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -76,8 +77,13 @@ WSGI_APPLICATION = 'error_notes.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd4csecl0k7ggtb',
+        'USER':'vmatbdutohthsd',
+        'PASSWORD':'88876166771807a786c9a8a85f0607b7c84355ac5eb836d1c9866d412c9944a1',
+        'PORT':'5432',
+        'HOST':'ec2-3-215-207-12.compute-1.amazonaws.com',
+
     }
 }
 
@@ -120,3 +126,4 @@ USE_TZ = True
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_URL = '/static/'
+django_heroku.settings(locals())
