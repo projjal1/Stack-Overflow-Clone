@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content%}
+
+{% for o in obj %}
+<div class="card">
+    <div class="card-header">{{o.content}}</div>
+    <div class="card-footer">
+        <a href="/confirm/{{o.id}},1">Delete</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="/confirm/{{o.id}},0">Not Abuse</a>
+    </div>
+</div>
+<br>
+{% endfor %}
+
+{% endblock %}

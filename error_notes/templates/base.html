@@ -65,9 +65,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{%url 'question'%}">Ask question</a>
                     </li>    
+                    {%if user.is_superuser%}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Admin</a>
+                        <a class="nav-link" href="{%url 'abuse_check'%}">Check Abuse</a>
                     </li> 
+                    {%else%}
+                    <li>
+                      <a class="nav-link" href="{%url 'login'%}">Login Admin</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="https://stackoverflow.com/">Visit StackOverflow</a>
                     </li> 

@@ -2,14 +2,23 @@ from django.shortcuts import render, redirect
 from .models import Question, Fixes
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.contrib import auth
+from django.contrib.postgres.search import *
 
 #Home page render 
 def index(request):
+    if request.method=="GET":
+        questions=Question.objects.order_by('-created_on')
+
+    else:
+        term=request.POST['search']
+        print(term)
+        questions=Question.objects.filter(title__icontains=term)
+
     #fetch page no
     page = request.GET.get('page', 1)
-
     #Perform pagination on object
-    questions=Question.objects.order_by('-created_on')
     paginator = Paginator(questions, 4)
     return render(request,"index.html",{"question":paginator.page(page)})
 
@@ -34,7 +43,7 @@ def question(request):
 #Load question 
 def QuestionDetail(request,id):
     ob=Question.objects.get(pk=id)
-    fix=Fixes.objects.filter(question_id=id)
+    fix=Fixes.objects.filter(question_id=id).order_by('-upvotes')
 
     cont=ob.content
     cont=cont.replace('&lt;','<')
@@ -71,11 +80,58 @@ def fixes(request):
 
     return redirect('home')
 
-def upvote(request,ans_id):
-    print (ans_id)
-    '''obj=Fixes.objects.get(pk=ans_id)
+#Upvote answer
+def upvote(request,ans_id,question_id):
+    obj=Fixes.objects.get(pk=ans_id)
     obj.upvotes+=1
-    ret_votes=obj.upvotes
-    obj.save()'''
+    obj.save()
 
-    return JsonResponse({'upvote':0})
+    return redirect('/question/'+str(question_id))
+
+#Report answer
+def report(request,ans_id,question_id):
+    obj=Fixes.objects.get(pk=ans_id)
+    obj.abuse=True 
+    obj.save()
+
+    return redirect('/question/'+str(question_id))
+
+#Check for abuse 
+def check_abuse(request):
+    obj=Fixes.objects.filter(abuse=True)
+
+    return render(request,'abuse_check.html',{'obj':obj})
+
+#Delete abuse reply 
+def confirm(request,ans_id,flag):
+    #Extract reply 
+    obj=Fixes.objects.get(pk=ans_id)
+    qobj=Question.objects.get(pk=obj.question_id)
+
+    #If flag is 0 (i.e not abuse) then set abuse as False
+    if flag==0:
+        obj.abuse=False 
+        obj.save()
+
+    else:
+        qobj.answers-=1
+        qobj.save()
+        obj.delete()
+
+    return redirect('abuse_check')
+
+#Login user
+def login_render(request):
+    return render(request,"login.html")
+
+#Authenicate user 
+def login(request): 
+    if request.method=="POST":
+        user=auth.authenticate(username=request.POST['username'],password=request.POST['pass1'])
+        if (user!=None):
+            auth.login(request,user)
+            return redirect("home")
+        else:
+            return render(request,"login.html",{'error':'User does not exist or password is wrong.'})
+    else:
+        return render(request,"login.html")

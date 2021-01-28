@@ -2,9 +2,10 @@
 
 {% block content%}
 
-<form>
+<form action="{%url 'home'%}" method="POST">
+  {% csrf_token %}
     <div class="input-group">
-        <input type="search" class="form-control rounded" placeholder="Dump your error...." aria-label="Search"
+        <input type="search" name="search" class="form-control rounded" placeholder="Dump your error...." aria-label="Search"
             aria-describedby="search-addon" />
         &nbsp;&nbsp;
         <input type="submit" value="Search for Fix" class="btn btn-primary"/>

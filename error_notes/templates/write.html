@@ -38,16 +38,16 @@
     </div>
 </div>
 
+
 {% for f in fix %}
 <div class="card">
     <div class="card-header">{{f.content}}</div>
     <div class="card-footer">
-        <input id="upvote" type="button" class="label upvote" value="Upvote Answer" style="background: red; color: white;">
+        <button ><a href="/upvotes/{{f.id}},{{object.id}}">Upvote</a></button>
         <button style="color: red;" hidden>Answer has been upvoted!</button>
         <button class="btn btn-primary">Upvotes <span class="badge">{{f.upvotes}}</span></button>
         <button class="btn btn-dark">Replied by <span class="badge">{{f.tag}}</span> on <span class="badge">{{f.created_on}}</span></button>
-        <button class="btn btn-light"><img src="/static/report_abuse.jpg" height="45"></button>
-        <input type="button" value="HEllo">
+        <button class="btn btn-light"><a href="/report/{{f.id}},{{object.id}}"><img src="/static/report_abuse.jpg" height="45"></a></button>
     </div>
 </div>
 <br>
