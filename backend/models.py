@@ -8,6 +8,7 @@ class Question(models.Model):
     tag = models.CharField(max_length=50)
     answers = models.IntegerField(default=0)
     created_on = models.DateTimeField(auto_now_add=True)
+    views=models.IntegerField(default=0)
 
 class Fixes(models.Model):
     question_id=models.IntegerField()

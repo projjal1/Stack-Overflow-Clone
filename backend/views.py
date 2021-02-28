@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 from .models import Question, Fixes
 from django.core.paginator import Paginator
@@ -8,19 +9,36 @@ from django.contrib.postgres.search import *
 
 #Home page render 
 def index(request):
+    disp_type="Fixes"
+
     if request.method=="GET":
         questions=Question.objects.order_by('-created_on')
+        disp_posts=Question.objects.order_by('-answers')[:4]
 
     else:
-        term=request.POST['search']
-        print(term)
-        questions=Question.objects.filter(title__icontains=term)
+        #Check if POST request from filter or search query
+        try:
+            search_type=request.POST['type']
+            if search_type=="fixes":
+                disp_posts=Question.objects.order_by('-answers')[:4]
+            elif search_type=="views":
+                disp_type="Views"
+                disp_posts=Question.objects.order_by('-views')[:4]
+            else:
+                pass
+
+            questions=Question.objects.order_by('-created_on')
+
+        except:
+            term=request.POST['search']
+            questions=Question.objects.filter(title__icontains=term)
 
     #fetch page no
     page = request.GET.get('page', 1)
     #Perform pagination on object
     paginator = Paginator(questions, 4)
-    return render(request,"index.html",{"question":paginator.page(page)})
+    return render(request,"index.html",{"question":paginator.page(page),"type_of_order":disp_type,
+    "disp_posts":disp_posts})
 
 #Write about a question 
 def ask_question(request):
@@ -43,6 +61,10 @@ def question(request):
 #Load question 
 def QuestionDetail(request,id):
     ob=Question.objects.get(pk=id)
+    views=ob.views+1
+    ob.views=views
+    ob.save()
+
     fix=Fixes.objects.filter(question_id=id).order_by('-upvotes')
 
     cont=ob.content

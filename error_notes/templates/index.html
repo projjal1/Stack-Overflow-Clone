@@ -15,7 +15,12 @@
 <br>
 <hr>
 <br>
-
+  
+<table>
+<tr>
+<td>
+<!-- Container to display posts-->
+<div class="container">
 {% for q in question %}
 <div class="card">
     <div class="card-header">{{q.title}}</div>
@@ -28,7 +33,39 @@
 </div>
 <br>
 {% endfor %}
+</div>
+</td>
 
+<td width="40%">
+<!-- Container to display top posts by params-->
+<div class="container">
+<div class="card">
+  <div class="card-header"><h1>Top Posts by {{type_of_order}}</h1></div>
+  <div class="card-body">Sort by 
+    <form action="{% url 'home'%}" method="POST">
+    {% csrf_token %}
+    <select id="cars" name="type">
+      <option value="fixes">Fixes</option>
+      <option value="views">Views</option>
+    </select>
+    <button class="btn btn-secondary">Filter</button>
+    </form>
+  </div>
+  <div class="card-footer">
+    <ul>
+      {% for d in disp_posts %}
+      <li><a href="question/{{ d.id }}">{{d.title}}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+</div>
+</td>
+</tr>
+</table>
+
+
+<!-- Paginator container tab-->
 <div class="container">
     {% if question.has_other_pages %}
       <ul class="pagination">
