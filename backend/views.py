@@ -6,6 +6,18 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.contrib.postgres.search import *
+import difflib
+
+#Custom model for search query
+class Question_Search:
+    def __init__(self,id,title,content,tag,answers,created_on,views):
+        self.id=id
+        self.title=title
+        self.content=content
+        self.tag=tag
+        self.answers=answers
+        self.created_on=created_on
+        self.views=views
 
 #Home page render 
 def index(request):
@@ -16,6 +28,9 @@ def index(request):
         disp_posts=Question.objects.order_by('-answers')[:4]
 
     else:
+        #Initializing disp_posts
+        disp_posts=None
+
         #Check if POST request from filter or search query
         try:
             search_type=request.POST['type']
@@ -30,8 +45,18 @@ def index(request):
             questions=Question.objects.order_by('-created_on')
 
         except:
+            questions=[]
             term=request.POST['search']
-            questions=Question.objects.filter(title__icontains=term)
+            questions_obj=Question.objects.all()
+            for q in questions_obj:
+                #Get similarity of text using Sequence Matcher
+                rat=difflib.SequenceMatcher(None,term,q.title).ratio()
+                print(rat)
+
+                #Check confidence score
+                if rat>0.35:
+                    questions.append(Question_Search(q.id,q.title,q.content,q.tag,q.answers,q.created_on,
+                    q.views))
 
     #fetch page no
     page = request.GET.get('page', 1)

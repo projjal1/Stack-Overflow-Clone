@@ -15,4 +15,5 @@ Username:admin    ;      Password:ILoveDjango
 <ul>
   <li>Added feature to display top posts by Views and Fixes.</li>
   <li>Added view tracking mechanism for questions.</li>
+  <li>Fixed sequence matching procedure for search bar</li>
 </ul>
